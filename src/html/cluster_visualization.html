@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>PubMed Disease Cluster</title>
+<style>
+
+.node {
+  cursor: pointer;
+}
+
+.node:hover {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node--leaf {
+  fill: white;
+}
+
+.label {
+  font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+  font-weight: bold;
+}
+
+.label,
+.node--root,
+.node--leaf {
+  pointer-events: none;
+}
+
+body {
+  padding: 0px;
+  background-color: white !important;
+  margin: 0px;
+}
+
+svg {
+ padding-top: 10px;
+ padding-left: 10px;
+}
+
+#cluster_details {
+  float: right;
+  right: 0px;
+  position: absolute;
+  width: 400px;
+  height: 100%;
+  background-color: lightgray;
+  background-color: rgba(211, 211, 211, 0.24);
+  border-left: 5px dashed gray;
+  overflow-y: auto;
+}
+
+.cluster_info {
+  background-color: white;
+  padding: 20px;
+  margin: 15px;
+  word-break: break-word;
+  border: 1px dotted gray;
+  font-size: 1.2em;
+}
+
+.cluster_pmid {
+  margin: 10px;
+  margin-bottom: 0px;
+  background-color: #ffffef;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.collapsed {
+  height: 30px;
+  vertical-align: middle;
+  -ms-transform: rotate(-90deg); /* IE 9 */
+  -webkit-transform: rotate(-90deg); /* Chrome, Safari, Opera */
+  transform: rotate(-90deg);
+}
+
+.expand {
+  height: 30px;
+  vertical-align: middle;
+  -ms-transform: rotate(0deg); /* IE 9 */
+  -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+  transform: rotate(0deg);
+}
+
+.pmid_details {
+  margin: 10px;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  border: 2px dashed black;
+  border-top: none;
+  background-color: #efefef;
+  padding: 10px;
+}
+
+</style>
+<body>
+<div id="cluster_details">
+</div>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+
+var json_obj;
+
+function load_top_words(doc) {
+    json_obj = doc;
+
+    for (index = 0; index < doc.children.length; index++) {
+        console.log(doc.children[index].top_words);
+        show_cluster_topwords_and_pmid_count(doc.children[index].name, doc.children[index].top_words, doc.children[index].pmid_count);
+    }
+
+}
+
+function show_cluster_topwords_and_pmid_count(name, top_words, pmid_count) {
+    var details_div = document.getElementById('cluster_details');
+    console.log(details_div);
+
+    var cluster_info = document.createElement('div');
+    cluster_info.className = 'cluster_info';
+
+    cluster_info.innerHTML = '<b>' + name + '</b><br /><i>' + top_words + '</i><br /><br /><i>Number of PMIDs in the cluster: </i><b>' + pmid_count + '</b>';
+
+    details_div.appendChild(cluster_info);
+}
+
+function clear_cluster_details_div() {
+    var node = document.getElementById('cluster_details');
+    while (node.hasChildNodes()) {
+        node.removeChild(node.lastChild);
+    }
+}
+
+function show_cluster_pmid(pmid) {
+    var details_div = document.getElementById('cluster_details');
+    console.log(details_div);
+
+
+    var cluster_info = document.createElement('div');
+    cluster_info.id = pmid.name;
+    cluster_info.className = 'cluster_pmid';
+
+    cluster_info.innerHTML = '<img id="img_' + pmid.name + '" src="collapse_arrow.png" class="collapsed" /><b>' + pmid.name + '</b>';
+    cluster_info.onclick = function(event) {
+	id = event.target.id;
+        if (event.target.nodeName == 'IMG' || event.target.nodeName == 'B') {
+	    id = event.target.parentElement.id;
+        }
+        var pmid_expand_state = document.getElementById('img_'+ pmid.name).className ;
+        if(pmid_expand_state == 'collapsed') {
+            document.getElementById('img_'+ pmid.name).className = 'expand';
+            var pmid_details = document.createElement('div');
+            pmid_details.id = pmid.name + '_details';
+            pmid_details.className = 'pmid_details';
+            html_str = '<a target="_new" href="http://www.ncbi.nlm.nih.gov/pubmed/?term=' + pmid.name + '">PubMed Link</a><br /><br />'; 
+            html_str += '<b>Title</b>: ' + pmid.title + '<br /><br />'
+            html_str += '<b>Keywords</b>: ' + pmid.keywords + '<br /><br />'
+            html_str += '<b>Abstract</b>: ' + pmid.abstract + '<br />'
+            
+            pmid_details.innerHTML = html_str
+            document.getElementById(pmid.name).parentNode.insertBefore(pmid_details, document.getElementById(pmid.name).nextSibling);
+        } else {
+            document.getElementById('img_'+ pmid.name).className = 'collapsed';
+            document.getElementById(pmid.name).parentNode.removeChild(document.getElementById(pmid.name + '_details'));
+        }
+        //pmid_details.insertAfter(document.getElementById(pmid));
+    };
+
+    details_div.appendChild(cluster_info);
+}
+
+
+function show_cluster_info_and_pmids(cluster_name) {
+    clear_cluster_details_div();
+    var match_found = false;
+    for (index = 0; index < json_obj.children.length; index++) {
+        if(json_obj.children[index].name == cluster_name) {
+            match_found = true;
+            show_cluster_topwords_and_pmid_count(json_obj.children[index].name, json_obj.children[index].top_words, json_obj.children[index].pmid_count);
+            for ( int_index = 0; int_index < json_obj.children[index].children.length; int_index++) {
+                show_cluster_pmid(json_obj.children[index].children[int_index]);
+            }
+        }
+    }
+
+    if (!match_found) {
+        load_top_words(json_obj);
+    }
+}
+
+var margin = 0,
+    diameter = window.innerHeight - 20;
+
+var details_win_width = window.innerWidth - diameter - 80;
+document.getElementById('cluster_details').style.width = details_win_width + 'px';
+
+var color = d3.scale.linear()
+    .domain([-1, 5])
+    .range(["hsl(152,80%,80%)", "hsl(228,30%,40%)"])
+    .interpolate(d3.interpolateHcl);
+
+var pack = d3.layout.pack()
+    .padding(2)
+    .size([diameter - margin, diameter - margin])
+    .value(function(d) { return d.size; })
+
+var svg = d3.select("body").append("svg")
+    .attr("height", diameter)
+    .attr("width", diameter)
+    .attr("margin-top", '20px')
+  .append("g")
+    .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+file_to_load = location.href.split('?')[1] + ".json";
+d3.json(file_to_load, function(error, root) {
+  if (error) throw error;
+
+  load_top_words(root);
+  var focus = root,
+      nodes = pack.nodes(root),
+      view;
+
+  var circle = svg.selectAll("circle")
+      .data(nodes)
+    .enter().append("circle")
+      .attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
+      .style("fill", function(d) { return d.children ? color(d.depth) : null; })
+      .on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); });
+
+  var text = svg.selectAll("text")
+      .data(nodes)
+    .enter().append("text")
+      .attr("class", "label")
+      .style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
+      .style("display", function(d) { return d.parent === root ? "inline" : "none"; })
+      .text(function(d) { return d.name; });
+
+  var node = svg.selectAll("circle,text");
+
+  d3.select("svg")
+      .style("background", "white")
+      .on("click", function() { zoom(root); });
+
+  zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+  function zoom(d) {
+    var focus0 = focus; focus = d;
+    show_cluster_info_and_pmids(d.name);
+
+    var transition = d3.transition()
+        .duration(d3.event.altKey ? 7500 : 750)
+        .tween("zoom", function(d) {
+          var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+          return function(t) { zoomTo(i(t)); };
+        });
+
+    transition.selectAll("text")
+      .filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+        .style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+        .each("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+        .each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+  }
+
+  function zoomTo(v) {
+    var k = diameter / v[2]; view = v;
+    node.attr("transform", function(d) { return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")"; });
+    circle.attr("r", function(d) { return d.r * k; });
+  }
+});
+
+d3.select(self.frameElement).style("height", diameter + "px");
+
+</script>
+

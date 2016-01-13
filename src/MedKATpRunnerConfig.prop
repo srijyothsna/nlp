@@ -1,0 +1,6 @@
+INPUT_DIR=input
+OUTPUT_DIR=output
+XML_AE_FILE=/opt/nlp/MedKATp/descriptors/analysis_engine/aggregate/MedKATp.xml
+LANG=en
+ENC=UTF-8
+INP_FILE_FORMAT=text
