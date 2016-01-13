@@ -6,19 +6,30 @@ if [ "$(id -u)" != "0" ]; then
 fi
 # Install script to setup all the required entities for running the pipeline
 
-pip install nltk --upgrade
-exit
+# pip install nltk --upgrade
+# exit
 
 # apt-get install the required packages
 apt-get update
-pre_req_packages='python-sqlalchemy python-beautifulsoup python-biopython python-nltk python-pip python-sklearn python-pandas apache2'
-apt-get -y install $pre_req_packages --force-yes
+# pre_req_packages='apache2 unzip wget python-dev python-sqlalchemy python-beautifulsoup python-biopython python-nltk python-pip python-sklearn python-pandas'
+apt-get install -yq \
+	apache2 \
+	unzip \
+	wget \
+	python-dev \
+	python-sqlalchemy \
+	python-beautifulsoup \
+	python-biopython \
+	python-nltk \
+	python-pip \
+	python-sklearn \
+	python-pandas \
 
 # Required NLTK data
 cp -r nltk_data ~/
 # Copy the MedKatp required config files to /opt
-mkdir /opt/nlp/
-unzip opt-nlp.zip -d /opt/nlp
+mkdir -p /opt/nlp/
+unzip -o opt-nlp.zip -d /opt/nlp
 
 cp dtds/* /usr/lib/python2.7/dist-packages/Bio/Entrez/DTDs/
 
