@@ -158,6 +158,17 @@ NOTE: This has been run and the XML dictionary file is provided. Therefore, this
 
 ##Database Schema
 
+![Articles](https://www.dropbox.com/s/6sfpjmfrmtxru87/Article.png?dl=0&raw=1)
+
+![Lexicon - Dictionary](https://www.dropbox.com/s/8gj3rhjdmllmdl9/Lexicon.png?dl=0&raw=1)
+
+![Lex type](https://www.dropbox.com/s/b2l0znmqisqp9we/LexType.png?dl=0&raw=1)
+
+![Named Entity](https://www.dropbox.com/s/tbir6yau2b2hqhl/NamedEntity.png?dl=0&raw=1)
+
+![ArticleSentence](https://www.dropbox.com/s/m4cpserwnfifcko/ArticleSentence.png?dl=0&raw=1)
+
+![Linkout](https://www.dropbox.com/s/03y3mzpr779rp63/Linkout.png?dl=0&raw=1)
 
 ##Dependencies
 
