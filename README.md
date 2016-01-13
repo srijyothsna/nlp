@@ -6,6 +6,11 @@ The application is built to retrieve the Pubmed abstracts for a list of PMIDs an
 
 The pipeline retrieves the abstracts, keywords (along with other information like title, authors, date, etc.) for a list of PMIDs and saves them to a local database; runs the Medical Knowledge Analysis Tool (MedKATp) framework, which is based on Apache UIMA for Named Entity Recognition (NER); runs a k-means clustering algorithm on the identified NEs (disease terms) in text and keywords, for which it uses 'cosine similarity' as the metric; and generates and displays the clusters in text format, which can also be viewed as a 'zoomable circle packing' visualization in a web browser.
 
+##How To Run
+
+An automated install script is provided in the repo. Run the install script as a super user. This will install all the dependencies and set up the environment. Then, launch the application by running main.py in src folder. 
+
+
 #Design
 
 This application is  built as a pipeline with a combination of Python and Java. The Entrez module from Biopython is used for retrieving the Pubmed abstracts. The text is processed with a dictionary-based approach for NER. The dictionary/ lexicon used for NER is build from the Human Disease Ontology (HDO). The MedKATp framework uses an xml-based dictionary. So, the terms from the HDO are processed and an xml dictionary is built. The dictionary has been further fine-tuned iteratively based on the results.
@@ -159,6 +164,9 @@ NOTE: This has been run and the XML dictionary file is provided. Therefore, this
 
 
 ##Database Schema
+
+The database is in Sqlite3 and the ORM used is Sqlalchemy. In order to run any database commands through the console, the sqlite3 package needs to be installed.
+
 
 ![Articles](https://www.dropbox.com/s/6sfpjmfrmtxru87/Article.png?dl=0&raw=1)
 
