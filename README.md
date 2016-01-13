@@ -34,13 +34,11 @@ This application is  built as a pipeline with a combination of Python and Java. 
 
 ###Python
 * Create the xml dictionary files for the pipeline, if needed.
-
 * Launch the application.
   * Run the application by calling a launch python script. Input parameter is a file containing a list of PMIDs, one per line.
 * Create db schema, if it does not exist
   * Check if the articles to be processed are present in the db
   * Load the dictionary/ lexicon in the database. This is for extensibility and not used currently.
-
 * Retrieve the Pubmed abstracts to be processed
 * Prepare input for text processing
   * Create the input and output folders for the pipeline
@@ -56,7 +54,6 @@ The steps in the NER pipeline include sentence detection, tokenization, stop wor
 * Retrieve and process the NE data from text processing
   * Insert NEs etc to DB
   * Run clustering algorithm. The k-means clustering algorithm is used with the metric as 'cosine similarity'. The nltk snowball stemmer implementation is used at this stage. The machine-learning scikit package is used for creating the tf-idf vector, pairwise distance (or similarity) calculation using cosine similarity and K-means clustering the words in the text, with configurable parameters to display number of clusters and number of words per cluster.
-
 * Display final o/p clusters
   * Show UI to display final o/p
 
@@ -81,7 +78,7 @@ The following have not yet been implemented and are planned to be done later:
 
 ##Package / Directory Structure
 
-nlp (project's root folder)
+nlp/src (project's root folder)
 * file: main.py - main class to initialize, set up the environment, read input and run each step in the process till the output is displayed
   * main()
     Input parameters: None
@@ -90,6 +87,7 @@ nlp (project's root folder)
 * file: PMIDs_mixed.txt - Input file containing the PMIDs, one per line.
 * file: nlp_db.sqlite - The database. Stores the article, lexicon, named entity and linkout data.
 * file: config.ini - Configuration parameters and file paths required for every step in the process.
+
 * file: config.py - Configuration helper to load config parameters from the file.
   * Class: ConfigParserHelper: Contains functions
     * __init() - Initialize the config parser and read the config.ini file
@@ -167,7 +165,6 @@ NOTE: This has been run and the XML dictionary file is provided. Therefore, this
 
 The database is in Sqlite3 and the ORM used is Sqlalchemy. In order to run any database commands through the console, the sqlite3 package needs to be installed.
 
-
 ![Articles](https://www.dropbox.com/s/6sfpjmfrmtxru87/Article.png?dl=0&raw=1)
 
 ![Lexicon - Dictionary](https://www.dropbox.com/s/8gj3rhjdmllmdl9/Lexicon.png?dl=0&raw=1)
@@ -208,13 +205,11 @@ The Disease Ontology is a community driven, open source ontology that is designe
 
 The Disease Ontology semantically integrates disease and medical vocabularies through extensive cross mapping of DO terms to MeSH, ICD, NCI’s thesaurus, SNOMED and OMIM.
 
-
 ###BioPython
 (http://biopython.org/wiki/Main_Page)
 Biopython is a set of freely available tools for biological computation written in Python by an international team of developers. It is a distributed collaborative effort to develop Python libraries and applications which address the needs of current and future work in bioinformatics.
 The Entrez module in BioPython provides code to access NCBI over the WWW. The efetch and read functions of this module have been used in this pipeline. 'efetch' Retrieves records in the requested format from a list of one or more primary IDs or from the user's environment. 'parse' Parses the XML results returned by those of the above functions which can return multiple records - such as efetch, esummary and elink.
 LICENSE: http://www.biopython.org/DIST/LICENSE
-
 
 ###MedKATp
 (http://ohnlp.sourceforge.net/MedKATp/)
@@ -228,7 +223,6 @@ Relation finding: components that populate the Cancer Disease Knowledge Model (C
 
 The document ingestion, NLP and concept finding steps have been used in this pipeline.
 LICENSE: ALv2 (Refer: http://ohnlp.org/index.php/MedKAT/p, http://www.apache.org/licenses/LICENSE-2.0)
-
 
 ###Scikit Learn (sklearn)
 (http://scikit-learn.org/stable/index.html)
