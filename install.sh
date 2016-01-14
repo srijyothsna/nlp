@@ -15,7 +15,7 @@ apt-get install -yq \
 	apache2 \ # install apache2
 	unzip \ # install unzip
 	wget \ # install wget
-	libc6-i386 \ needed to run Java JRE
+	libc6-i386 \ # needed to run Java JRE
 	python-dev \ # install python-dev explicitly
 	python-sqlalchemy \
 	python-beautifulsoup \
