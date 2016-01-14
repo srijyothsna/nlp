@@ -6,17 +6,17 @@ if [ "$(id -u)" != "0" ]; then
 fi
 # Install script to setup all the required entities for running the pipeline
 
-# pip install nltk --upgrade
 # exit
 
 # apt-get install the required packages
 apt-get update
 # pre_req_packages='apache2 unzip wget python-dev python-sqlalchemy python-beautifulsoup python-biopython python-nltk python-pip python-sklearn python-pandas'
 apt-get install -yq \
-	apache2 \
-	unzip \
-	wget \
-	python-dev \
+	apache2 \ # install apache2
+	unzip \ # install unzip
+	wget \ # install wget
+	libc6-i386 \ needed to run Java JRE
+	python-dev \ # install python-dev explicitly
 	python-sqlalchemy \
 	python-beautifulsoup \
 	python-biopython \
@@ -24,6 +24,9 @@ apt-get install -yq \
 	python-pip \
 	python-sklearn \
 	python-pandas \
+
+# moving the pip install to be after python-pip has been installed
+pip install nltk --upgrade
 
 # Required NLTK data
 cp -r nltk_data ~/
